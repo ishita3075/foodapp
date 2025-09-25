@@ -28,4 +28,4 @@ RUN ./mvnw clean package -DskipTests
 EXPOSE 8080
 
 # Step 9: Run the JAR file when the container starts
-CMD ["java", "-jar", "target/foodapp-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/app/target/foodapp-0.0.1-SNAPSHOT.jar"]
