@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth") // Authentication endpoints
+@RequestMapping("/users") // Changed from /auth to /users
 public class UserController {
 
     @Autowired
@@ -21,7 +21,7 @@ public class UserController {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // User Registration
+    // User Registration (optional, can remove if handled by AuthController)
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         if (userService.existsByEmail(user.getEmail())) {
@@ -29,19 +29,18 @@ public class UserController {
                     .body("{\"error\":\"Email already registered\"}");
         }
 
-        // Hash the password before saving
+        // Hash password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userService.saveUser(user);
 
         return ResponseEntity.ok("{\"message\":\"User registered successfully\"}");
     }
 
-    // User Login
+    // User Login (optional, can remove if handled by AuthController)
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         User existingUser = userService.findByEmail(user.getEmail());
         if (existingUser != null && passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            // Generate JWT token
             String token = jwtUtil.generateToken(existingUser.getEmail());
             return ResponseEntity.ok("{\"token\":\"" + token + "\"}");
         }
