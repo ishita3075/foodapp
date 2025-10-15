@@ -31,7 +31,7 @@ public class PasswordResetService {
 
         // delete any existing token for this user
         tokenRepository.deleteByUser(user);
-
+        tokenRepository.flush();
         String token = UUID.randomUUID().toString();
         LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(30);
 
