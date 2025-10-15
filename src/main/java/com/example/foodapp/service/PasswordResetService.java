@@ -1,5 +1,5 @@
 package com.example.foodapp.service;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.example.foodapp.model.PasswordResetToken;
 import com.example.foodapp.model.User;
 import com.example.foodapp.repository.PasswordResetTokenRepository;
@@ -22,7 +22,7 @@ public class PasswordResetService {
     private PasswordResetTokenRepository tokenRepository;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
+    @Transactional
     public String generateResetToken(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
@@ -40,7 +40,7 @@ public class PasswordResetService {
 
         return token;
     }
-
+    @Transactional
     public void resetPassword(String token, String newPassword) {
         PasswordResetToken resetToken = tokenRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid reset token"));
