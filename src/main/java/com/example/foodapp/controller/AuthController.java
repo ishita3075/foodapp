@@ -101,4 +101,45 @@ public class AuthController {
                     .body(Map.of("error", e.getMessage()));
         }
     }
+    // ✅ ---------------- GOOGLE EMAIL VERIFICATION ENDPOINT ----------------
+    @PostMapping("/verify-google-email")
+    public ResponseEntity<?> verifyGoogleEmail(@RequestBody Map<String, String> request) {
+        String idToken = request.get("idToken"); // token sent from frontend
+
+        try {
+            // Verify the token with Google's servers
+            com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier verifier =
+                    new com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier.Builder(
+                            new com.google.api.client.http.javanet.NetHttpTransport(),
+                            new com.google.api.client.json.gson.GsonFactory())
+                            .setAudience(java.util.Collections.singletonList("241062799395-kms9mcpd3kh7410njnpubhoott8o9lkf.apps.googleusercontent.com")) // 👈 Replace this
+                            .build();
+
+            com.google.api.client.googleapis.auth.oauth2.GoogleIdToken googleIdToken =
+                    verifier.verify(idToken);
+
+            if (googleIdToken != null) {
+                com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload payload = googleIdToken.getPayload();
+                String email = payload.getEmail();
+                boolean emailVerified = Boolean.TRUE.equals(payload.getEmailVerified());
+
+                if (emailVerified) {
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("verified", true);
+                    response.put("email", email);
+                    return ResponseEntity.ok(response);
+                } else {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("verified", false, "error", "Email is not verified by Google"));
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("verified", false, "error", "Invalid Google ID token"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("verified", false, "error", e.getMessage()));
+        }
+    }
+
 }

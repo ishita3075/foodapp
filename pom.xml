@@ -11,7 +11,12 @@
 		<version>3.5.6</version>
 		<relativePath/>
 	</parent>
-
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+	</repositories>
 	<groupId>com.example</groupId>
 	<artifactId>foodapp</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -97,6 +102,24 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+		<!-- Google OAuth client for verifying ID tokens -->
+		<dependency>
+			<groupId>com.google.oauth-client</groupId>
+			<artifactId>google-oauth-client</artifactId>
+			<version>1.39.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.api-client</groupId>
+			<artifactId>google-api-client</artifactId>
+			<version>2.1.0</version>
+		</dependency>
+		<!-- HTTP transport for Google OAuth client -->
+		<dependency>
+			<groupId>com.google.http-client</groupId>
+			<artifactId>google-http-client-gson</artifactId>
+			<version>1.42.3</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
